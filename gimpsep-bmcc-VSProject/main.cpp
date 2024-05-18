@@ -54,7 +54,7 @@ void callBackFunc(int event, int x, int y, int flags, void *userdata)
 
 int main()
 {
-    char *imageName = "./HappyFish.jpg";
+    char imageName[] = "HappyFish.jpg";
     colorImage = imread(imageName);
     if (!colorImage.data)
     {

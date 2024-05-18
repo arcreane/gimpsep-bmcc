@@ -2,7 +2,7 @@
 build/
 
 # OpenCV build directory
-opencv/build/
+opencv
 
 # Compiled object files
 *.o
@@ -19,3 +19,7 @@ Makefile
 
 # macOS specific files
 .DS_Store
+
+# Visual Studio Community files
+.vs
+

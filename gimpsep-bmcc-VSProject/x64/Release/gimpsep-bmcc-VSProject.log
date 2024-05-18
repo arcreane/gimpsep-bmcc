@@ -1,0 +1,16 @@
+﻿  main.cpp
+C:\Users\cocom\source\repos\gimpsep-bmcc-VSProject\gimpsep-bmcc-VSProject\main.cpp(38,68): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\cocom\source\repos\gimpsep-bmcc-VSProject\gimpsep-bmcc-VSProject\main.cpp(38,50): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+          with
+          [
+              _Tp=int
+          ]
+  Previous IPDB and IOBJ mismatch, fall back to full compilation.
+  Génération de code en cours
+  All 122 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Fin de la génération du code
+  gimpsep-bmcc-VSProject.vcxproj -> C:\Users\cocom\source\repos\gimpsep-bmcc-VSProject\x64\Release\gimpsep-bmcc-VSProject.exe
