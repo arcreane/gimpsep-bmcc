@@ -23,3 +23,5 @@ Makefile
 # Visual Studio Community files
 .vs
 
+.vscode/settings.json
+gimpsep-bmcc-VSProject/gimpsep-bmcc
