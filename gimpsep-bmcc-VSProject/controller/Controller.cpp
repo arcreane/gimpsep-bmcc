@@ -14,15 +14,20 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
 {
     if (event == cv::EVENT_LBUTTONDOWN)
     {
-        if (x < 30 && y < 30)
-        {
-            std::cout << "Toggle gray mode button clicked" << std::endl;
-            toggleGrayMode();
-        }
-        else if (x < 60 && y < 30)
+        if (x >= 0 && x < 30 && y >= 0 && y < 30)
         {
             std::cout << "Load image button clicked" << std::endl;
             loadImage();
+        }
+        else if (x >= 40 && x < 70 && y >= 0 && y < 30)
+        {
+            std::cout << "Save image button clicked" << std::endl;
+            saveImage();
+        }
+        else if (x >= 0 && x < 30 && y >= 40 && y < 70)
+        {
+            std::cout << "Toggle gray mode button clicked" << std::endl;
+            toggleGrayMode();
         }
     }
 }
@@ -47,6 +52,12 @@ void Controller::toggleGrayMode()
 {
     model.toggleGrayMode();
     updateView();
+}
+
+void Controller::saveImage()
+{
+    cv::Mat image = model.getImage();
+    imwrite("output.jpg", image);
 }
 
 void Controller::updateView()
