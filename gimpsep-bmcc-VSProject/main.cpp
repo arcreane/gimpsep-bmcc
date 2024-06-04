@@ -7,7 +7,7 @@ int main()
         Controller controller;
         cv::waitKey();
     }
-    catch (const std::exception &e)
+    catch (const std::exception& e)
     {
         std::cerr << "Exception caught: " << e.what() << std::endl;
     }
