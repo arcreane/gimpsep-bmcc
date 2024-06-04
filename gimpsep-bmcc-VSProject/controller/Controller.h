@@ -12,6 +12,7 @@ public:
     void handleMouseEvent(int event, int x, int y, int flags, void *userdata);
     void loadImage();
     void toggleGrayMode();
+    void saveImage();
 
 private:
     ImageModel model;
