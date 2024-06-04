@@ -1,3 +1,11 @@
+#ifndef CONTROLLER_H
+#define CONTROLLER_H
+
+#include <opencv2/opencv.hpp>
+#include "../model/ImageModel.h"
+#include "../view/View.h"
+
+
 class Controller
 {
 public:
@@ -6,8 +14,8 @@ public:
     void loadImage();
     void toggleGrayMode();
     void saveImage();
-    void dilateImage(); // Add this line
-    void erodeImage();  // Add this line
+    void dilateImage(); 
+    void erodeImage();  
 
 private:
     ImageModel model;

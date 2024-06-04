@@ -10,8 +10,8 @@ View::View(ImageModel &model) : model(model), buttonText("Gris"), winName("GIMPr
 
 void View::setMouseCallback(std::function<void(int, int, int, int, void *)> callback)
 {
-    mouseCallback = callback;                     // Store the callback
-    cv::setMouseCallback(winName, onMouse, this); // Pass 'this' pointer as userdata
+    mouseCallback = callback;                  
+    cv::setMouseCallback(winName, onMouse, this); 
 }
 
 void View::onMouse(int event, int x, int y, int flags, void *userdata)
@@ -27,13 +27,13 @@ void View::update()
 {
     createGUI();
     cv::imshow(winName, canvas);
-    cv::waitKey(1); // Ensure the window is updated
+    cv::waitKey(1); 
 }
 
 void View::createGUI()
 {
     int buttonSize = 30;
-    int buttonSpacing = 10; // Space between buttons
+    int buttonSpacing = 10;
     int canvasWidth = 1400;
     int canvasHeight = 1000;
     canvas = cv::Mat3b(canvasHeight, canvasWidth, cv::Vec3b(0, 0, 0));
@@ -51,7 +51,6 @@ void View::createGUI()
     cv::rectangle(canvas, grayButtonRect, cv::Scalar(200, 200, 200), cv::FILLED);
     cv::putText(canvas, "Gris", cv::Point(buttonSize * 0.1, (buttonSize + buttonSpacing) + buttonSize * 0.7), cv::FONT_HERSHEY_PLAIN, 0.8, cv::Scalar(0, 0, 0));
 
-    // Display image if loaded
     cv::Mat image = model.getImage();
     if (!image.empty())
     {
@@ -59,7 +58,6 @@ void View::createGUI()
         double aspectRatio = static_cast<double>(image.cols) / image.rows;
         int newWidth, newHeight;
 
-        // Adjust new width and height to maintain aspect ratio
         if (canvasWidth - 200 < (canvasHeight - 200) * aspectRatio)
         {
             newWidth = canvasWidth - 200;
@@ -77,11 +75,9 @@ void View::createGUI()
             cv::cvtColor(resizedImage, resizedImage, cv::COLOR_GRAY2BGR);
         }
 
-        // Center the resized image on the canvas
         int offsetX = (canvasWidth - resizedImage.cols) / 2;
         int offsetY = (canvasHeight - resizedImage.rows) / 2;
 
-        // Ensure the offset values are non-negative
         offsetX = std::max(0, offsetX);
         offsetY = std::max(0, offsetY);
 

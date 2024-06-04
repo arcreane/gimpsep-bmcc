@@ -1,3 +1,13 @@
+#include "Controller.h"
+#include "../tinyfiledialogs.h"
+#include <iostream>
+
+Controller::Controller() : view(model)
+{
+    view.setMouseCallback([this](int event, int x, int y, int flags, void* userdata)
+        { this->handleMouseEvent(event, x, y, flags, userdata); });
+    updateView(); 
+}
 void Controller::handleMouseEvent(int event, int x, int y, int flags, void* userdata)
 {
     if (event == cv::EVENT_LBUTTONDOWN)

@@ -1,3 +1,10 @@
+#ifndef IMAGEMODEL_H
+#define IMAGEMODEL_H
+
+#include <opencv2/opencv.hpp>
+#include <string>
+
+
 class ImageModel
 {
 public:
@@ -6,11 +13,13 @@ public:
     void toggleGrayMode();
     bool isGrayMode() const;
     cv::Mat getImage() const;
-    void dilateImage(); // Add this line
-    void erodeImage();  // Add this line
+    void dilateImage();
+    void erodeImage();  
 
 private:
     cv::Mat colorImage;
     cv::Mat grayImage;
     bool grayMode;
 };
+
+#endif // IMAGEMODEL_H
