@@ -1,31 +1,23 @@
-#include "ImageModel.h"
-
-ImageModel::ImageModel() : grayMode(false) {}
-
-void ImageModel::loadImage(const std::string &path)
+void ImageModel::dilateImage()
 {
-    colorImage = cv::imread(path);
     if (!colorImage.empty())
     {
-        cv::cvtColor(colorImage, grayImage, cv::COLOR_BGR2GRAY);
+        cv::dilate(colorImage, colorImage, cv::Mat());
+        if (grayMode)
+        {
+            cv::dilate(grayImage, grayImage, cv::Mat());
+        }
     }
 }
 
-void ImageModel::toggleGrayMode()
+void ImageModel::erodeImage()
 {
-    grayMode = !grayMode;
-}
-
-bool ImageModel::isGrayMode() const
-{
-    return grayMode;
-}
-
-cv::Mat ImageModel::getImage() const
-{
-    if (grayMode && !grayImage.empty())
+    if (!colorImage.empty())
     {
-        return grayImage;
+        cv::erode(colorImage, colorImage, cv::Mat());
+        if (grayMode)
+        {
+            cv::erode(grayImage, grayImage, cv::Mat());
+        }
     }
-    return colorImage;
 }
