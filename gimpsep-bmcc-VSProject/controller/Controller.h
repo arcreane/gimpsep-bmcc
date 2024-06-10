@@ -16,6 +16,8 @@ private:
     void saveImage();
     void updateView();
     void applyCanny();
+    void applyLighten();
+    void applyDarken();
 
     ImageModel model;
     View view;

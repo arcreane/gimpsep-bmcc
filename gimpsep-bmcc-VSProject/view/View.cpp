@@ -61,10 +61,12 @@ void View::createGUI()
     {
         buttonNames.push_back("Save");
         buttonNames.push_back("Gris");
+        buttonNames.push_back("Lighten");
+        buttonNames.push_back("Darken");
         if (!model.isGrayMode()) {
             buttonNames.push_back("+Canny");
         }
-        drawButtons(buttonNames);
+    drawButtons(buttonNames);
 
         cv::Mat resizedImage;
         double aspectRatio = static_cast<double>(image.cols) / image.rows;
