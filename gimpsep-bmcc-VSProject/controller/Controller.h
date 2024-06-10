@@ -19,6 +19,7 @@ private:
     void erodeOrDilate(bool isErosion, int size);
     void increaseImageSize();
     void decreaseImageSize();
+    void undo();
 
     ImageModel model;
     View view;

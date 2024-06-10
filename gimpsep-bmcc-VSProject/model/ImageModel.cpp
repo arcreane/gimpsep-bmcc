@@ -44,3 +44,23 @@ void ImageModel::setImage(const cv::Mat& image)
 {
     colorImage = image;
 }
+
+void ImageModel::saveState()
+{
+    imageHistory.push(colorImage.clone());
+}
+
+void ImageModel::undo()
+{
+    if (!imageHistory.empty())
+    {
+        colorImage = imageHistory.top();
+        imageHistory.pop();
+    }
+}
+
+int ImageModel::getStackSize() const
+{
+    return imageHistory.size();
+}
+

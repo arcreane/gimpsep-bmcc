@@ -54,12 +54,18 @@ void View::drawButtons(const std::vector<std::string>& buttonNames) {
 void View::createGUI()
 {
     int buttonSize = 70;
-    int buttonSpacing = 10; // Space between buttons
+    int buttonSpacing = 10;
     int canvasWidth = 1400;
     int canvasHeight = 1000;
     canvas = cv::Mat3b(canvasHeight, canvasWidth, cv::Vec3b(0, 0, 0));
 
     std::vector<std::string> buttonNames = {"File", "Save", "Size+", "Size-", "Gris" , "erode", "dilate"};
+    int undoCount = model.getStackSize();
+    if (undoCount > 0) {
+        buttonNames.push_back("Undo (" + std::to_string(undoCount) + ")");
+    } else {
+        buttonNames.push_back("Undo");
+    }
     if (!model.isGrayMode()) {
         buttonNames.push_back("+Canny");
     }
@@ -73,9 +79,8 @@ void View::createGUI()
         double aspectRatio = static_cast<double>(image.cols) / image.rows;
         int newWidth = static_cast<int>(image.cols);
         int newHeight = static_cast<int>(image.rows);
+
         if (!model.isResizeMode()) {
-            std::cout << "new Width : " << newWidth << std::endl;
-            // Adjust new width and height to maintain aspect ratio
             if (canvasWidth - 200 < (canvasHeight - 200) * aspectRatio)
             {
                 newWidth = canvasWidth - 200;
@@ -89,38 +94,32 @@ void View::createGUI()
 
             cv::resize(image, resizedImage, cv::Size(newWidth, newHeight));
 
-            // Center the resized image on the canvas
             int offsetX = (canvasWidth - resizedImage.cols) / 2;
             int offsetY = (canvasHeight - resizedImage.rows) / 2;
 
-            // Ensure the offset values are non-negative
-            offsetX = std::max(0, offsetX);
-            offsetY = std::max(0, offsetY);
+            offsetX = std::max(0, std::min(offsetX, canvasWidth - resizedImage.cols));
+            offsetY = std::max(0, std::min(offsetY, canvasHeight - resizedImage.rows));
 
-            std::cout << "Image type" << resizedImage.type() << std::endl;
-            std::cout << "Canvas type" << canvas.type() << std::endl;
-            // Ensure the types match before copying
-            if (resizedImage.type() == canvas.type()) {
+            if (offsetX + resizedImage.cols <= canvasWidth && offsetY + resizedImage.rows <= canvasHeight) {
                 resizedImage.copyTo(canvas(cv::Rect(offsetX, offsetY, resizedImage.cols, resizedImage.rows)));
+            } else {
+                std::cerr << "Resized image dimensions are out of canvas bounds" << std::endl;
             }
-            else {
-                std::cerr << "Type mismatch between resizedImage and canvas" << std::endl;
+        } else {
+            int offsetX = (canvasWidth - image.cols) / 2;
+            int offsetY = (canvasHeight - image.rows) / 2;
+
+            offsetX = std::max(0, std::min(offsetX, canvasWidth - image.cols));
+            offsetY = std::max(0, std::min(offsetY, canvasHeight - image.rows));
+
+            if (offsetX + image.cols <= canvasWidth && offsetY + image.rows <= canvasHeight) {
+                image.copyTo(canvas(cv::Rect(offsetX, offsetY, image.cols, image.rows)));
+            } else {
+                std::cerr << "Image dimensions are out of canvas bounds" << std::endl;
             }
-        }
-
-        int offsetX = (canvasWidth - image.cols) / 2;
-        int offsetY = (canvasHeight - image.rows) / 2;
-
-        offsetX = std::max(0, offsetX);
-        offsetY = std::max(0, offsetY);
-
-        std::cout << "Image type" << image.type() << std::endl;
-        std::cout << "Canvas type" << canvas.type() << std::endl;
-        if (image.type() == canvas.type()) {
-            image.copyTo(canvas(cv::Rect(offsetX, offsetY, image.cols, image.rows)));
-        }
-        else {
-            std::cerr << "Type mismatch between resizedImage and canvas" << std::endl;
         }
     }
 }
+
+
+
