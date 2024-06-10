@@ -21,6 +21,7 @@ private:
     void decreaseImageSize();
     void applyLighten();
     void applyDarken();
+    void addImageToRight();
 
     ImageModel model;
     View view;
