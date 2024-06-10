@@ -251,4 +251,3 @@ void Controller::addImageToRight()
         std::cout << "No image selected for panorama" << std::endl;
     }
 }
-
