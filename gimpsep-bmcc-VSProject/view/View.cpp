@@ -1,5 +1,5 @@
 #include "View.h"
-#include "ImageModel.h"
+#include "../model/ImageModel.h"
 #include <opencv2/opencv.hpp>
 #include <iostream>
 
