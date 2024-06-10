@@ -33,6 +33,16 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
         }
         else if (buttonRects.size() > 3 && buttonRects[3].contains(cv::Point(x, y)))
         {
+            std::cout << "Lighten button clicked" << std::endl;
+            applyLighten();
+        }
+        else if (buttonRects.size() > 4 && buttonRects[4].contains(cv::Point(x, y)))
+        {
+            std::cout << "Darken button clicked" << std::endl;
+            applyDarken();
+        }
+        else if (buttonRects.size() > 5 && buttonRects[5].contains(cv::Point(x, y)))
+        {
             std::cout << "Increase Canny threshold button clicked" << std::endl;
             applyCanny();
         }
@@ -140,6 +150,20 @@ void Controller::erodeOrDilate(bool isErosion, int size)
 void Controller::undo()
 {
     model.undo();
+    updateView();
+}
+
+void Controller::applyLighten()
+{
+    cv::Mat lightenedImage = model.getImage();
+    lightenedImage.convertTo(lightenedImage, -1, 1, 50); // Increase brightness
+    updateView();
+}
+
+void Controller::applyDarken()
+{
+    cv::Mat darkenImage = model.getImage();
+    darkenImage.convertTo(darkenImage, -1, 1, - 50); // Increase brightness
     updateView();
 }
 

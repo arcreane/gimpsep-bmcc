@@ -20,6 +20,8 @@ private:
     void increaseImageSize();
     void decreaseImageSize();
     void undo();
+    void applyLighten();
+    void applyDarken();
 
     ImageModel model;
     View view;
