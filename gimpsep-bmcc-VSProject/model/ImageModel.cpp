@@ -1,6 +1,6 @@
 #include "ImageModel.h"
 
-ImageModel::ImageModel() : grayMode(false) {}
+ImageModel::ImageModel() : grayMode(false), resizeMode(false) {}
 
 void ImageModel::loadImage(const std::string &path)
 {
@@ -16,9 +16,19 @@ void ImageModel::toggleGrayMode()
     grayMode = !grayMode;
 }
 
+void ImageModel::toggleResizeMode()
+{
+    resizeMode = !resizeMode;
+}
+
 bool ImageModel::isGrayMode() const
 {
     return grayMode;
+}
+
+bool ImageModel::isResizeMode() const
+{
+    return resizeMode;
 }
 
 cv::Mat ImageModel::getImage() const
@@ -28,4 +38,9 @@ cv::Mat ImageModel::getImage() const
         return grayImage;
     }
     return colorImage;
+}
+
+void ImageModel::setImage(const cv::Mat& image)
+{
+    colorImage = image;
 }

@@ -73,38 +73,53 @@ void View::createGUI()
         double aspectRatio = static_cast<double>(image.cols) / image.rows;
         int newWidth = static_cast<int>(image.cols);
         int newHeight = static_cast<int>(image.rows);
-        
-        std::cout << "new Width : " << newWidth << std::endl;
-        // Adjust new width and height to maintain aspect ratio
-        if (canvasWidth - 200 < (canvasHeight - 200) * aspectRatio)
-        {
-            newWidth = canvasWidth - 200;
-            newHeight = static_cast<int>(newWidth / aspectRatio);
-        }
-        else
-        {
-            newHeight = canvasHeight - 200;
-            newWidth = static_cast<int>(newHeight * aspectRatio);
-        }
-        
-        cv::resize(image, resizedImage, cv::Size(newWidth, newHeight));
-        if (model.isGrayMode())
-        {
-            cv::cvtColor(resizedImage, resizedImage, cv::COLOR_GRAY2BGR);
+        if (!model.isResizeMode()) {
+            std::cout << "new Width : " << newWidth << std::endl;
+            // Adjust new width and height to maintain aspect ratio
+            if (canvasWidth - 200 < (canvasHeight - 200) * aspectRatio)
+            {
+                newWidth = canvasWidth - 200;
+                newHeight = static_cast<int>(newWidth / aspectRatio);
+            }
+            else
+            {
+                newHeight = canvasHeight - 200;
+                newWidth = static_cast<int>(newHeight * aspectRatio);
+            }
+
+            cv::resize(image, resizedImage, cv::Size(newWidth, newHeight));
+
+            // Center the resized image on the canvas
+            int offsetX = (canvasWidth - resizedImage.cols) / 2;
+            int offsetY = (canvasHeight - resizedImage.rows) / 2;
+
+            // Ensure the offset values are non-negative
+            offsetX = std::max(0, offsetX);
+            offsetY = std::max(0, offsetY);
+
+            std::cout << "Image type" << resizedImage.type() << std::endl;
+            std::cout << "Canvas type" << canvas.type() << std::endl;
+            // Ensure the types match before copying
+            if (resizedImage.type() == canvas.type()) {
+                resizedImage.copyTo(canvas(cv::Rect(offsetX, offsetY, resizedImage.cols, resizedImage.rows)));
+            }
+            else {
+                std::cerr << "Type mismatch between resizedImage and canvas" << std::endl;
+            }
         }
 
-        // Center the resized image on the canvas
-        int offsetX = (canvasWidth - resizedImage.cols) / 2;
-        int offsetY = (canvasHeight - resizedImage.rows) / 2;
+        int offsetX = (canvasWidth - image.cols) / 2;
+        int offsetY = (canvasHeight - image.rows) / 2;
 
-        // Ensure the offset values are non-negative
         offsetX = std::max(0, offsetX);
         offsetY = std::max(0, offsetY);
 
-        // Ensure the types match before copying
-        if (resizedImage.type() == canvas.type()) {
-            resizedImage.copyTo(canvas(cv::Rect(offsetX, offsetY, resizedImage.cols, resizedImage.rows)));
-        } else {
+        std::cout << "Image type" << image.type() << std::endl;
+        std::cout << "Canvas type" << canvas.type() << std::endl;
+        if (image.type() == canvas.type()) {
+            image.copyTo(canvas(cv::Rect(offsetX, offsetY, image.cols, image.rows)));
+        }
+        else {
             std::cerr << "Type mismatch between resizedImage and canvas" << std::endl;
         }
     }
