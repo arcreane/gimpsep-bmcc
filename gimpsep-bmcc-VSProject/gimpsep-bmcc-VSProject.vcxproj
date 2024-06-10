@@ -19,7 +19,17 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="controller\Controller.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="model\ImageModel.cpp" />
+    <ClCompile Include="tinyfiledialogs.c" />
+    <ClCompile Include="view\View.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="controller\Controller.h" />
+    <ClInclude Include="model\ImageModel.h" />
+    <ClInclude Include="tinyfiledialogs.h" />
+    <ClInclude Include="view\View.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
