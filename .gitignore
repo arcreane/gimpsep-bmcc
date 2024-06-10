@@ -25,3 +25,4 @@ Makefile
 
 .vscode/settings.json
 gimpsep-bmcc-VSProject/gimpsep-bmcc
+gimpsep-bmcc-VSProject/x64/Release
