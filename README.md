@@ -10,14 +10,14 @@ Logiciel d'édition d'image
 
 ## Introduction
 
-Je vais vous expliquer comment config ce projet de mort, mais ca reprend ce qu'on a fait en cours vous inquietez pas (en fait si inquietez vous)
+Je vais vous expliquer comment config ce projet, mais ca reprend ce qu'on a fait en cours vous inquietez pas (en fait si inquietez vous)
 
 Tout d'abord, assurez vous que le fichier main.cpp soit bien visible, sinon allez dans l'explorateur de fichier pour le rajouter dans les fichiers sources.
 
 ## Configuration
 
 
-Tout d'abord, assurez vous d'avoir bien setup la variable d'environement OPENCV_PATH, qui doit mener vers votre répertoir openCV, qui fini par: 
+Ensuite, assurez vous d'avoir bien setup la variable d'environement OPENCV_PATH, qui doit mener vers votre répertoir openCV, qui fini par: 
 opencv\build.
 
 
@@ -44,4 +44,4 @@ Maintenant vous pouvez fermer la fenêtre de config.
 
 Dans la barre en haut de la vue générale de Visual Studio community, vous avez la petite flèche verte pour run, et à gauche vous avez deux options : Vous devez les passer à "Release" et "x64"
 
-Ensuite, vous pouver run, et normalement ca devrait marcher. Sinon vous me pingez discord et je vous insultes parce vous êtes mauvais, puis je vous aide :)
+Ensuite, vous pouver run, et normalement ca devrait marcher.
