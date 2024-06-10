@@ -41,11 +41,13 @@ void View::update()
 void View::drawButtons(const std::vector<std::string>& buttonNames) {
     int buttonSize = 70;
     int buttonSpacing = 10; // Space between buttons
+    buttonRects.clear(); // Clear previous button positions
 
     for (size_t i = 0; i < buttonNames.size(); ++i) {
         int x = (i % 2) * (buttonSize + buttonSpacing);
         int y = (i / 2) * (buttonSize / 2 + buttonSpacing);
         cv::Rect buttonRect(x, y, buttonSize, buttonSize / 2);
+        buttonRects.push_back(buttonRect); // Store button position
         cv::rectangle(canvas, buttonRect, cv::Scalar(200, 200, 200), cv::FILLED);
         cv::putText(canvas, buttonNames[i], cv::Point(x + buttonSize * 0.1, y + buttonSize / 2 * 0.7), cv::FONT_HERSHEY_PLAIN, 0.8, cv::Scalar(0, 0, 0));
     }
@@ -75,6 +77,13 @@ void View::createGUI()
     cv::Mat image = model.getImage();
     if (!image.empty())
     {
+        buttonNames.push_back("Save");
+        buttonNames.push_back("Gris");
+        if (!model.isGrayMode()) {
+            buttonNames.push_back("+Canny");
+        }
+        drawButtons(buttonNames);
+
         cv::Mat resizedImage;
         double aspectRatio = static_cast<double>(image.cols) / image.rows;
         int newWidth = static_cast<int>(image.cols);

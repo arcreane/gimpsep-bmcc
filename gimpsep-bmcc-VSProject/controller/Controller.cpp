@@ -14,53 +14,27 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
 {
     if (event == cv::EVENT_LBUTTONDOWN)
     {
-        int buttonSize = 70;
-        int buttonSpacing = 10;
-        
-        int col = x / (buttonSize + buttonSpacing);
-        int row = y / (buttonSize / 2 + buttonSpacing);
-        int buttonIndex = row * 2 + col;
-
-        switch (buttonIndex)
+        std::cout << "Mouse clicked at (" << x << ", " << y << ")" << std::endl;
+        const auto& buttonRects = view.getButtonRects();
+        if (buttonRects.size() > 0 && buttonRects[0].contains(cv::Point(x, y)))
         {
-        case 0:
             std::cout << "Load image button clicked" << std::endl;
             loadImage();
-            break;
-        case 1:
+        }
+        else if (buttonRects.size() > 1 && buttonRects[1].contains(cv::Point(x, y)))
+        {
             std::cout << "Save image button clicked" << std::endl;
             saveImage();
-            break;
-        case 2:
-            std::cout << "Size + mode button clicked" << std::endl;
-            decreaseImageSize();
-            break;
-        case 3:
-            std::cout << "Size - mode button clicked" << std::endl;
-            increaseImageSize();
-            break;
-        case 4:
+        }
+        else if (buttonRects.size() > 2 && buttonRects[2].contains(cv::Point(x, y)))
+        {
             std::cout << "Toggle gray mode button clicked" << std::endl;
             toggleGrayMode();
-            break;
-        case 5:
-            std::cout << "Erode threshold button clicked" << std::endl;
-            erodeOrDilate(true, 10);
-            break;
-        case 6:
-            std::cout << "dilate threshold button clicked" << std::endl;
-            erodeOrDilate(false, 10);
-            break;
-        case 7:
-            std::cout << "Undo button clicked" << std::endl;
-            undo();
-            break;
-        case 8:
+        }
+        else if (buttonRects.size() > 3 && buttonRects[3].contains(cv::Point(x, y)))
+        {
             std::cout << "Increase Canny threshold button clicked" << std::endl;
             applyCanny();
-            break;
-        default:
-            break;
         }
     }
 }
@@ -178,4 +152,23 @@ void Controller::saveImage()
 void Controller::updateView()
 {
     view.update();
+}
+
+void Controller::applyCanny()
+{
+    cv::Mat grayImage, edges;
+
+    // Convert to grayscale if the image is not already in grayscale
+    if (model.getImage().channels() == 3) {
+        cv::cvtColor(model.getImage(), grayImage, cv::COLOR_BGR2GRAY);
+    } else {
+        grayImage = model.getImage();
+    }
+
+    // Apply Canny edge detection
+    cv::Canny(grayImage, edges, lowThreshold, highThreshold, kernelSize);
+
+    // Convert edges to BGR format to display in color image
+    cv::cvtColor(edges, model.getImage(), cv::COLOR_GRAY2BGR);
+    updateView();
 }
