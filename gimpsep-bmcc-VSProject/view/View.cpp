@@ -90,20 +90,25 @@ void View::createGUI()
         double aspectRatio = static_cast<double>(image.cols) / image.rows;
         int newWidth = static_cast<int>(image.cols);
         int newHeight = static_cast<int>(image.rows);
-
-        if (!model.isResizeMode()) {
-            if (canvasWidth - 200 < (canvasHeight - 200) * aspectRatio)
-            {
-                newWidth = canvasWidth - 200;
-                newHeight = static_cast<int>(newWidth / aspectRatio);
-            }
-            else
-            {
-                newHeight = canvasHeight - 200;
-                newWidth = static_cast<int>(newHeight * aspectRatio);
-            }
-
-            cv::resize(image, resizedImage, cv::Size(newWidth, newHeight));
+        
+        std::cout << "new Width : " << newWidth << std::endl;
+        // Adjust new width and height to maintain aspect ratio
+        if (canvasWidth - 200 < (canvasHeight - 200) * aspectRatio)
+        {
+            newWidth = canvasWidth - 200;
+            newHeight = static_cast<int>(newWidth / aspectRatio);
+        }
+        else
+        {
+            newHeight = canvasHeight - 200;
+            newWidth = static_cast<int>(newHeight * aspectRatio);
+        }
+        
+        cv::resize(image, resizedImage, cv::Size(newWidth, newHeight));
+        if (model.isGrayMode())
+        {
+            cv::cvtColor(resizedImage, resizedImage, cv::COLOR_GRAY2BGR);
+        }
 
             int offsetX = (canvasWidth - resizedImage.cols) / 2;
             int offsetY = (canvasHeight - resizedImage.rows) / 2;

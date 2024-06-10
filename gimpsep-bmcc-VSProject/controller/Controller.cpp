@@ -167,6 +167,31 @@ void Controller::applyDarken()
     updateView();
 }
 
+void Controller::increaseImageSize()
+{
+    cv::Mat image = model.getImage();
+    if (!image.empty()) {
+        // Diminue la taille de l'image par exemple en divisant la largeur et la hauteur par un facteur
+        double scaleFactor = 1.1; // Facteur de réduction par exemple
+        cv::Mat resizedImage;
+        cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
+        image = resizedImage;
+        updateView(); // Met à jour la vue avec la nouvelle image
+    }
+}
+
+void Controller::decreaseImageSize() {
+    cv::Mat image = model.getImage();
+    if (!image.empty()) {
+        // Diminue la taille de l'image par exemple en divisant la largeur et la hauteur par un facteur
+        double scaleFactor = 0.9; // Facteur de réduction par exemple
+        cv::Mat resizedImage;
+        cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
+        image = resizedImage;
+        updateView(); // Met à jour la vue avec la nouvelle image
+    }
+}
+
 void Controller::saveImage()
 {
     cv::Mat image = model.getImage();
@@ -196,3 +221,25 @@ void Controller::applyCanny()
     cv::cvtColor(edges, model.getImage(), cv::COLOR_GRAY2BGR);
     updateView();
 }
+
+void Controller::erodeOrDilate(bool isErosion, int size)
+{
+    cv::Mat image = model.getImage();
+    if (!image.empty())
+    {
+        cv::Mat result;
+        cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(size, size));
+
+        if (isErosion)
+        {
+            cv::erode(image, result, kernel);
+        }
+        else
+        {
+            cv::dilate(image, result, kernel);
+        }
+        image = result;
+        updateView();
+    }
+}
+
