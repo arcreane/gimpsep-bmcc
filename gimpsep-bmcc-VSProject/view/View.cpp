@@ -30,26 +30,32 @@ void View::update()
     cv::waitKey(1); // Ensure the window is updated
 }
 
+void View::drawButtons(const std::vector<std::string>& buttonNames) {
+    int buttonSize = 70;
+    int buttonSpacing = 10; // Space between buttons
+
+    for (size_t i = 0; i < buttonNames.size(); ++i) {
+        int x = (i % 2) * (buttonSize + buttonSpacing);
+        int y = (i / 2) * (buttonSize / 2 + buttonSpacing);
+        cv::Rect buttonRect(x, y, buttonSize, buttonSize / 2);
+        cv::rectangle(canvas, buttonRect, cv::Scalar(200, 200, 200), cv::FILLED);
+        cv::putText(canvas, buttonNames[i], cv::Point(x + buttonSize * 0.1, y + buttonSize / 2 * 0.7), cv::FONT_HERSHEY_PLAIN, 0.8, cv::Scalar(0, 0, 0));
+    }
+}
+
 void View::createGUI()
 {
-    int buttonSize = 30;
+    int buttonSize = 70;
     int buttonSpacing = 10; // Space between buttons
     int canvasWidth = 1400;
     int canvasHeight = 1000;
     canvas = cv::Mat3b(canvasHeight, canvasWidth, cv::Vec3b(0, 0, 0));
 
-    // Draw buttons
-    cv::Rect fileButtonRect(0, 0, buttonSize, buttonSize);
-    cv::rectangle(canvas, fileButtonRect, cv::Scalar(200, 200, 200), cv::FILLED);
-    cv::putText(canvas, "File", cv::Point(buttonSize * 0.1, buttonSize * 0.7), cv::FONT_HERSHEY_PLAIN, 0.8, cv::Scalar(0, 0, 0));
-
-    cv::Rect saveButtonRect(buttonSize + buttonSpacing, 0, buttonSize, buttonSize);
-    cv::rectangle(canvas, saveButtonRect, cv::Scalar(200, 200, 200), cv::FILLED);
-    cv::putText(canvas, "Save", cv::Point((buttonSize + buttonSpacing) + buttonSize * 0.1, buttonSize * 0.7), cv::FONT_HERSHEY_PLAIN, 0.8, cv::Scalar(0, 0, 0));
-
-    cv::Rect grayButtonRect(0, buttonSize + buttonSpacing, buttonSize, buttonSize);
-    cv::rectangle(canvas, grayButtonRect, cv::Scalar(200, 200, 200), cv::FILLED);
-    cv::putText(canvas, "Gris", cv::Point(buttonSize * 0.1, (buttonSize + buttonSpacing) + buttonSize * 0.7), cv::FONT_HERSHEY_PLAIN, 0.8, cv::Scalar(0, 0, 0));
+    std::vector<std::string> buttonNames = {"File", "Save", "Gris"};
+    if (!model.isGrayMode()) {
+        buttonNames.push_back("+Canny");
+    }
+    drawButtons(buttonNames);
 
     // Display image if loaded
     cv::Mat image = model.getImage();
@@ -85,6 +91,11 @@ void View::createGUI()
         offsetX = std::max(0, offsetX);
         offsetY = std::max(0, offsetY);
 
-        resizedImage.copyTo(canvas(cv::Rect(offsetX, offsetY, resizedImage.cols, resizedImage.rows)));
+        // Ensure the types match before copying
+        if (resizedImage.type() == canvas.type()) {
+            resizedImage.copyTo(canvas(cv::Rect(offsetX, offsetY, resizedImage.cols, resizedImage.rows)));
+        } else {
+            std::cerr << "Type mismatch between resizedImage and canvas" << std::endl;
+        }
     }
 }

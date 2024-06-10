@@ -11,6 +11,7 @@ public:
     View(ImageModel &model);
     void setMouseCallback(std::function<void(int, int, int, int, void *)> callback);
     void update();
+    void drawButtons(const std::vector<std::string>& buttonNames);
 
 private:
     ImageModel &model;

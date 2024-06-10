@@ -2,7 +2,7 @@
 #include "../tinyfiledialogs.h"
 #include <iostream>
 
-Controller::Controller() : view(model)
+Controller::Controller() : view(model), lowThreshold(100), highThreshold(200), kernelSize(3)
 {
     // Set the mouse callback
     view.setMouseCallback([this](int event, int x, int y, int flags, void *userdata)
@@ -14,20 +14,34 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
 {
     if (event == cv::EVENT_LBUTTONDOWN)
     {
-        if (x >= 0 && x < 30 && y >= 0 && y < 30)
+        int buttonSize = 70;
+        int buttonSpacing = 10;
+        
+        // Calculate button index based on x and y coordinates
+        int col = x / (buttonSize + buttonSpacing);
+        int row = y / (buttonSize / 2 + buttonSpacing);
+        int buttonIndex = row * 2 + col;
+
+        switch (buttonIndex)
         {
+        case 0:
             std::cout << "Load image button clicked" << std::endl;
             loadImage();
-        }
-        else if (x >= 40 && x < 70 && y >= 0 && y < 30)
-        {
+            break;
+        case 1:
             std::cout << "Save image button clicked" << std::endl;
             saveImage();
-        }
-        else if (x >= 0 && x < 30 && y >= 40 && y < 70)
-        {
+            break;
+        case 2:
             std::cout << "Toggle gray mode button clicked" << std::endl;
             toggleGrayMode();
+            break;
+        case 3:
+            std::cout << "Increase Canny threshold button clicked" << std::endl;
+            applyCanny();
+            break;
+        default:
+            break;
         }
     }
 }
@@ -64,3 +78,23 @@ void Controller::updateView()
 {
     view.update();
 }
+
+void Controller::applyCanny()
+{
+    cv::Mat grayImage, edges;
+
+    // Convert to grayscale if the image is not already in grayscale
+    if (model.getImage().channels() == 3) {
+        cv::cvtColor(model.getImage(), grayImage, cv::COLOR_BGR2GRAY);
+    } else {
+        grayImage = model.getImage();
+    }
+
+    // Apply Canny edge detection
+    cv::Canny(grayImage, edges, lowThreshold, highThreshold, kernelSize);
+
+    // Convert edges to BGR format to display in color image
+    cv::cvtColor(edges, model.getImage(), cv::COLOR_GRAY2BGR);
+    updateView();
+}
+

@@ -1,23 +1,29 @@
 #ifndef CONTROLLER_H
 #define CONTROLLER_H
 
-#include <opencv2/opencv.hpp>
-#include "../model/ImageModel.h"
 #include "../view/View.h"
+#include "../model/ImageModel.h"
 
 class Controller
 {
 public:
     Controller();
+
+private:
     void handleMouseEvent(int event, int x, int y, int flags, void *userdata);
     void loadImage();
     void toggleGrayMode();
     void saveImage();
+    void updateView();
+    void applyCanny();
 
-private:
     ImageModel model;
     View view;
-    void updateView();
+
+    // New Canny threshold variables
+    int kernelSize;
+    int lowThreshold = 100;
+    int highThreshold = 200;
 };
 
 #endif // CONTROLLER_H
