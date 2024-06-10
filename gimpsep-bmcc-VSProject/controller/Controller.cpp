@@ -43,6 +43,21 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
         }
         else if (buttonRects.size() > 5 && buttonRects[5].contains(cv::Point(x, y)))
         {
+            std::cout << "Erode button clicked" << std::endl;
+            erodeOrDilate(true, 10);
+        }
+        else if (buttonRects.size() > 6 && buttonRects[6].contains(cv::Point(x, y)))
+        {
+            std::cout << "Dilate button clicked" << std::endl;
+            erodeOrDilate(false, 10);
+        }
+        else if (buttonRects.size() > 7 && buttonRects[7].contains(cv::Point(x, y)))
+        {
+            std::cout << "Undo button clicked" << std::endl;
+            undo();
+        }
+        else if (buttonRects.size() > 8 && buttonRects[8].contains(cv::Point(x, y)))
+        {
             std::cout << "Increase Canny threshold button clicked" << std::endl;
             applyCanny();
         }
@@ -156,14 +171,16 @@ void Controller::undo()
 void Controller::applyLighten()
 {
     cv::Mat lightenedImage = model.getImage();
-    lightenedImage.convertTo(lightenedImage, -1, 1, 50); // Increase brightness
+    model.saveState();
+    lightenedImage.convertTo(lightenedImage, -1, 1, 50);
     updateView();
 }
 
 void Controller::applyDarken()
 {
     cv::Mat darkenImage = model.getImage();
-    darkenImage.convertTo(darkenImage, -1, 1, - 50); // Increase brightness
+    model.saveState();
+    darkenImage.convertTo(darkenImage, -1, 1, - 50);
     updateView();
 }
 
@@ -171,7 +188,7 @@ void Controller::increaseImageSize()
 {
     cv::Mat image = model.getImage();
     if (!image.empty()) {
-        model.saveState(); // Save the current state before modifying
+        model.saveState();
         double scaleFactor = 1.1f;
         cv::Mat resizedImage;
         cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
@@ -187,7 +204,7 @@ void Controller::decreaseImageSize()
 {
     cv::Mat image = model.getImage();
     if (!image.empty()) {
-        model.saveState(); // Save the current state before modifying
+        model.saveState();
         double scaleFactor = 0.9f;
         cv::Mat resizedImage;
         cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
@@ -207,7 +224,7 @@ void Controller::applyCanny()
     } else {
         grayImage = model.getImage();
     }
-    model.saveState(); // Save the current state before modifying
+    model.saveState();
     cv::Canny(grayImage, edges, lowThreshold, highThreshold, kernelSize);
     cv::cvtColor(edges, model.getImage(), cv::COLOR_GRAY2BGR);
     updateView();
@@ -217,7 +234,7 @@ void Controller::erodeOrDilate(bool isErosion, int size)
 {
     cv::Mat image = model.getImage();
     if (!image.empty()) {
-        model.saveState(); // Save the current state before modifying
+        model.saveState();
         cv::Mat result;
         cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(size, size));
         if (isErosion) {

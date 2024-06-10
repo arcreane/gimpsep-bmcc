@@ -61,17 +61,8 @@ void View::createGUI()
     int canvasHeight = 1000;
     canvas = cv::Mat3b(canvasHeight, canvasWidth, cv::Vec3b(0, 0, 0));
 
-    std::vector<std::string> buttonNames = {"File", "Save", "Size+", "Size-", "Gris" , "erode", "dilate"};
-    int undoCount = model.getStackSize();
-    if (undoCount > 0) {
-        buttonNames.push_back("Undo (" + std::to_string(undoCount) + ")");
-    } else {
-        buttonNames.push_back("Undo");
-    }
-    if (!model.isGrayMode()) {
-        buttonNames.push_back("+Canny");
-    }
-    drawButtons(buttonNames);
+    std::vector<std::string> buttonNames = {"File"};
+    
 
     // Display image if loaded
     cv::Mat image = model.getImage();
@@ -81,10 +72,18 @@ void View::createGUI()
         buttonNames.push_back("Gris");
         buttonNames.push_back("Lighten");
         buttonNames.push_back("Darken");
+        buttonNames.push_back("Erode");
+        buttonNames.push_back("Dilate");
+        int undoCount = model.getStackSize();
+        if (undoCount > 0) {
+            buttonNames.push_back("Undo (" + std::to_string(undoCount) + ")");
+        } else {
+            buttonNames.push_back("Undo");
+        }
         if (!model.isGrayMode()) {
             buttonNames.push_back("+Canny");
         }
-    drawButtons(buttonNames);
+        drawButtons(buttonNames);
 
         cv::Mat resizedImage;
         double aspectRatio = static_cast<double>(image.cols) / image.rows;
