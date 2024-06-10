@@ -33,10 +33,26 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
             saveImage();
             break;
         case 2:
+            std::cout << "Size + mode button clicked" << std::endl;
+            decreaseImageSize();
+            break;
+        case 3:
+            std::cout << "Size - mode button clicked" << std::endl;
+            increaseImageSize();
+            break;
+        case 4:
             std::cout << "Toggle gray mode button clicked" << std::endl;
             toggleGrayMode();
             break;
-        case 3:
+        case 5:
+            std::cout << "Erode threshold button clicked" << std::endl;
+            erodeOrDilate(true, 10);
+            break;
+        case 6:
+            std::cout << "dilate threshold button clicked" << std::endl;
+            erodeOrDilate(false, 10);
+            break;
+        case 7:
             std::cout << "Increase Canny threshold button clicked" << std::endl;
             applyCanny();
             break;
@@ -68,6 +84,31 @@ void Controller::toggleGrayMode()
     updateView();
 }
 
+void Controller::increaseImageSize()
+{
+    cv::Mat image = model.getImage();
+    if (!image.empty()) {
+        // Diminue la taille de l'image par exemple en divisant la largeur et la hauteur par un facteur
+        double scaleFactor = 1.1; // Facteur de réduction par exemple
+        cv::Mat resizedImage;
+        cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
+        image = resizedImage;
+        updateView(); // Met à jour la vue avec la nouvelle image
+    }
+}
+
+void Controller::decreaseImageSize() {
+    cv::Mat image = model.getImage();
+    if (!image.empty()) {
+        // Diminue la taille de l'image par exemple en divisant la largeur et la hauteur par un facteur
+        double scaleFactor = 0.9; // Facteur de réduction par exemple
+        cv::Mat resizedImage;
+        cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
+        image = resizedImage;
+        updateView(); // Met à jour la vue avec la nouvelle image
+    }
+}
+
 void Controller::saveImage()
 {
     cv::Mat image = model.getImage();
@@ -96,5 +137,26 @@ void Controller::applyCanny()
     // Convert edges to BGR format to display in color image
     cv::cvtColor(edges, model.getImage(), cv::COLOR_GRAY2BGR);
     updateView();
+}
+
+void Controller::erodeOrDilate(bool isErosion, int size)
+{
+    cv::Mat image = model.getImage();
+    if (!image.empty())
+    {
+        cv::Mat result;
+        cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(size, size));
+
+        if (isErosion)
+        {
+            cv::erode(image, result, kernel);
+        }
+        else
+        {
+            cv::dilate(image, result, kernel);
+        }
+        image = result;
+        updateView();
+    }
 }
 

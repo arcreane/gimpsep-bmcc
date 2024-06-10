@@ -16,6 +16,9 @@ private:
     void saveImage();
     void updateView();
     void applyCanny();
+    void erodeOrDilate(bool isErosion, int size);
+    void increaseImageSize();
+    void decreaseImageSize();
 
     ImageModel model;
     View view;

@@ -2,26 +2,34 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 
-View::View(ImageModel &model) : model(model), buttonText("Gris"), winName("GIMProvise")
+View::View(ImageModel& model) : model(model), buttonText("Gris"), winName("GIMProvise"), scaleFactor(1.0f)
 {
     cv::namedWindow(winName, cv::WINDOW_AUTOSIZE);
     createGUI();
 }
 
-void View::setMouseCallback(std::function<void(int, int, int, int, void *)> callback)
+void View::setMouseCallback(std::function<void(int, int, int, int, void*)> callback)
 {
     mouseCallback = callback;                     // Store the callback
     cv::setMouseCallback(winName, onMouse, this); // Pass 'this' pointer as userdata
 }
 
-void View::onMouse(int event, int x, int y, int flags, void *userdata)
+void View::onMouse(int event, int x, int y, int flags, void* userdata)
 {
-    View *self = static_cast<View *>(userdata);
+    View* self = static_cast<View*>(userdata);
     if (self->mouseCallback)
     {
         self->mouseCallback(event, x, y, flags, userdata);
     }
+
+    if (event == cv::EVENT_LBUTTONDOWN)
+    {
+        int buttonSize = 30;
+        int buttonSpacing = 10;
+        cv::Rect increaseButtonRect(buttonSize + 2 * buttonSpacing, 0, buttonSize, buttonSize);
+    }
 }
+
 
 void View::update()
 {
@@ -51,7 +59,7 @@ void View::createGUI()
     int canvasHeight = 1000;
     canvas = cv::Mat3b(canvasHeight, canvasWidth, cv::Vec3b(0, 0, 0));
 
-    std::vector<std::string> buttonNames = {"File", "Save", "Gris"};
+    std::vector<std::string> buttonNames = {"File", "Save", "Size+", "Size-", "Gris" , "erode", "dilate"};
     if (!model.isGrayMode()) {
         buttonNames.push_back("+Canny");
     }
@@ -63,8 +71,10 @@ void View::createGUI()
     {
         cv::Mat resizedImage;
         double aspectRatio = static_cast<double>(image.cols) / image.rows;
-        int newWidth, newHeight;
-
+        int newWidth = static_cast<int>(image.cols);
+        int newHeight = static_cast<int>(image.rows);
+        
+        std::cout << "new Width : " << newWidth << std::endl;
         // Adjust new width and height to maintain aspect ratio
         if (canvasWidth - 200 < (canvasHeight - 200) * aspectRatio)
         {
@@ -76,7 +86,7 @@ void View::createGUI()
             newHeight = canvasHeight - 200;
             newWidth = static_cast<int>(newHeight * aspectRatio);
         }
-
+        
         cv::resize(image, resizedImage, cv::Size(newWidth, newHeight));
         if (model.isGrayMode())
         {

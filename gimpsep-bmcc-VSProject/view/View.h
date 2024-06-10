@@ -16,6 +16,7 @@ public:
 private:
     ImageModel &model;
     cv::Mat canvas;
+    std::float_t scaleFactor;
     std::string buttonText;
     std::string winName;
     std::function<void(int, int, int, int, void *)> mouseCallback; // Store the callback
