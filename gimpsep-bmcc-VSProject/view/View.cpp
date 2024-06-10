@@ -5,7 +5,7 @@
 View::View(ImageModel& model) : model(model), buttonText("Gris"), winName("GIMProvise"), scaleFactor(1.0f)
 {
     cv::namedWindow(winName, cv::WINDOW_AUTOSIZE);
-    cv::createTrackbar("Erosion Size", winName, &erosionSize, 21, onErosionSizeChange, this);
+    cv::createTrackbar("Erosion Size", winName, &erosionSize, 15, onErosionSizeChange, this);
     createGUI();
 }
 
@@ -63,11 +63,7 @@ void View::createGUI()
     canvas = cv::Mat3b(canvasHeight, canvasWidth, cv::Vec3b(0, 0, 0));
 
 
-    std::vector<std::string> buttonNames = {"File", "Save", "Size+", "Size-", "Gris" , "erode", "dilate"};
-    if (!model.isGrayMode()) {
-        buttonNames.push_back("+Canny");
-    }
-    drawButtons(buttonNames);
+    std::vector<std::string> buttonNames = {"File"};
 
     // Display image if loaded
     cv::Mat image = model.getImage();
@@ -77,10 +73,14 @@ void View::createGUI()
         buttonNames.push_back("Gris");
         buttonNames.push_back("Lighten");
         buttonNames.push_back("Darken");
+        buttonNames.push_back("Size+");
+        buttonNames.push_back("Size-");
+        buttonNames.push_back("erode");
+        buttonNames.push_back("dilate");
         if (!model.isGrayMode()) {
             buttonNames.push_back("+Canny");
         }
-    drawButtons(buttonNames);
+        drawButtons(buttonNames);
 
         cv::Mat resizedImage;
         double aspectRatio = static_cast<double>(image.cols) / image.rows;

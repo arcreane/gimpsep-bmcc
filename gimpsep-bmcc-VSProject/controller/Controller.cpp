@@ -25,28 +25,7 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
         {
             std::cout << "Save image button clicked" << std::endl;
             saveImage();
-            break;
-        case 2:
-            std::cout << "Size + mode button clicked" << std::endl;
-            decreaseImageSize();
-            break;
-        case 3:
-            std::cout << "Size - mode button clicked" << std::endl;
-            increaseImageSize();
-            break;
-        case 4:
-            std::cout << "Toggle gray mode button clicked" << std::endl;
-            toggleGrayMode();
-            break;
-        case 5:
-            std::cout << "Erode threshold button clicked" << std::endl;
-            erodeOrDilate(true, 10);
-            break;
-        case 6:
-            std::cout << "dilate threshold button clicked" << std::endl;
-            erodeOrDilate(false, 10);
-            break;
-        case 7:
+
         }
         else if (buttonRects.size() > 2 && buttonRects[2].contains(cv::Point(x, y)))
         {
@@ -64,6 +43,26 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
             applyDarken();
         }
         else if (buttonRects.size() > 5 && buttonRects[5].contains(cv::Point(x, y)))
+        {
+            std::cout << "Size + mode button clicked" << std::endl;
+            increaseImageSize();
+        }
+        else if (buttonRects.size() > 5 && buttonRects[6].contains(cv::Point(x, y)))
+        {
+            std::cout << "Size - mode button clicked" << std::endl;
+                decreaseImageSize();
+        }
+        else if (buttonRects.size() > 5 && buttonRects[7].contains(cv::Point(x, y)))
+        {
+            std::cout << "Erode threshold button clicked" << std::endl;
+                erodeOrDilate(true);
+        }
+        else if (buttonRects.size() > 5 && buttonRects[8].contains(cv::Point(x, y)))
+        {
+            std::cout << "dilate threshold button clicked" << std::endl;
+            erodeOrDilate(false);
+        }
+        else if (buttonRects.size() > 5 && buttonRects[9].contains(cv::Point(x, y)))
         {
             std::cout << "Increase Canny threshold button clicked" << std::endl;
             applyCanny();
@@ -207,7 +206,7 @@ void Controller::applyCanny()
     updateView();
 }
 
-void Controller::erodeOrDilate(bool isErosion, int size)
+void Controller::erodeOrDilate(bool isErosion)
 {
     cv::Mat image = model.getImage();
     if (!image.empty())
