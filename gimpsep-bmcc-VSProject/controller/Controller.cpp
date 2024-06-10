@@ -80,22 +80,43 @@ void Controller::loadImage()
 
 void Controller::toggleGrayMode()
 {
-
     cv::Mat image = model.getImage();
-    if (!image.empty()) {
+    if (!image.empty())
+    {
         cv::Mat grayImage;
         // Convert to grayscale if the image is not already in grayscale
-        if (image.channels() == 3) {
+        // deprecated, because the image is always passed on BGR after the operation to be printed on the canvas
+        if (image.channels() == 3)
+        {
             cv::cvtColor(image, grayImage, cv::COLOR_BGR2GRAY);
-            std::cout << "image" << image<< std::endl;
+            std::cout << "Converted to grayscale, channels: " << grayImage.channels() << std::endl;
+        }
+        else
+        {
+            grayImage = image.clone();  // Ensure we have a proper clone of the grayscale image
+            std::cout << "Image is already grayscale, channels: " << grayImage.channels() << std::endl;
+        }
+
+        if (!grayImage.empty())
+        {
             model.setImage(grayImage);
+            // To give image the same type as canvas to print it
+            cv::cvtColor(model.getImage(), grayImage, cv::COLOR_GRAY2BGR);
+            model.setImage(grayImage);
+            std::cout << "Image type after gray conversion: " << model.getImage().type() << std::endl;
+            updateView();
         }
-        else {
-            grayImage = model.getImage();
+        else
+        {
+            std::cerr << "Error: grayImage is empty after conversion" << std::endl;
         }
-        updateView();
+    }
+    else
+    {
+        std::cerr << "Error: Original image is empty" << std::endl;
     }
 }
+
 
 void Controller::increaseImageSize()
 {

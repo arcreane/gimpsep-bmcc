@@ -1,7 +1,19 @@
 ﻿  Controller.cpp
+  View.cpp
+C:\Users\cocom\source\repos\gimpsep-bmcc-VSProject\gimpsep-bmcc-VSProject\view\View.cpp(47,59): warning C4267: 'initialisation' : conversion de 'size_t' en 'int', perte possible de données
+C:\Users\cocom\source\repos\gimpsep-bmcc-VSProject\gimpsep-bmcc-VSProject\view\View.cpp(50,79): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+          with
+          [
+              _Tp=int
+          ]
+C:\Users\cocom\source\repos\gimpsep-bmcc-VSProject\gimpsep-bmcc-VSProject\view\View.cpp(50,57): warning C4244: 'argument' : conversion de 'double' en '_Tp', perte possible de données
+          with
+          [
+              _Tp=int
+          ]
   Génération de code en cours
   2 of 296 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    7 functions had inline decision re-evaluated but remain unchanged
+    15 functions had inline decision re-evaluated but remain unchanged
   Fin de la génération du code
   gimpsep-bmcc-VSProject.vcxproj -> C:\Users\cocom\source\repos\gimpsep-bmcc-VSProject\x64\Release\gimpsep-bmcc-VSProject.exe
