@@ -172,10 +172,14 @@ void Controller::increaseImageSize()
     cv::Mat image = model.getImage();
     if (!image.empty()) {
         // Diminue la taille de l'image par exemple en divisant la largeur et la hauteur par un facteur
-        double scaleFactor = 1.1; // Facteur de réduction par exemple
+        double scaleFactor = 1.1f; // Facteur de réduction par exemple
         cv::Mat resizedImage;
         cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
         image = resizedImage;
+        model.setImage(resizedImage);
+        if (!model.isResizeMode()) {
+            model.toggleResizeMode();
+        }
         updateView(); // Met à jour la vue avec la nouvelle image
     }
 }
@@ -184,10 +188,17 @@ void Controller::decreaseImageSize() {
     cv::Mat image = model.getImage();
     if (!image.empty()) {
         // Diminue la taille de l'image par exemple en divisant la largeur et la hauteur par un facteur
-        double scaleFactor = 0.9; // Facteur de réduction par exemple
+        double scaleFactor = 0.9f; // Facteur de réduction par exemple
         cv::Mat resizedImage;
         cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
         image = resizedImage;
+        std::cout << "Image type after resize" << resizedImage.type() << std::endl;
+        model.setImage(resizedImage);
+        std::cout << "Image type after save" << model.getImage().type() << std::endl;
+        if (!model.isResizeMode()) {
+            model.toggleResizeMode();
+        }
+        std::cout << "new Width : " << static_cast<int>(model.getImage().cols) << std::endl;
         updateView(); // Met à jour la vue avec la nouvelle image
     }
 }
@@ -238,7 +249,7 @@ void Controller::erodeOrDilate(bool isErosion, int size)
         {
             cv::dilate(image, result, kernel);
         }
-        image = result;
+        model.setImage(result);
         updateView();
     }
 }
