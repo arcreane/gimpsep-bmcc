@@ -22,6 +22,7 @@ private:
     void applyLighten();
     void applyDarken();
     void addImageToRight();
+    void undo();
 
     ImageModel model;
     View view;

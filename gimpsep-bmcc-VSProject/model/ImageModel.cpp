@@ -50,8 +50,31 @@ void ImageModel::setErosionSize(int size)
     erosionSize = size;
 }
 
-int ImageModel::getErosionSize()
+int ImageModel::getErosionSize() const
 {
     return erosionSize;
+}
+
+void ImageModel::saveState()
+{
+    if (!colorImage.empty())
+    {
+        imageHistory.push(colorImage.clone());
+    }
+}
+
+void ImageModel::undo()
+{
+    if (!imageHistory.empty())
+    {
+        colorImage = imageHistory.top();
+        imageHistory.pop();
+    }
+}
+
+// Define the getStackSize method
+int ImageModel::getStackSize() const {
+    // Your implementation here
+    return imageHistory.size(); // Assuming stackSize is a member variable
 }
 

@@ -71,9 +71,14 @@ void View::createGUI()
         buttonNames.push_back("erode");
         buttonNames.push_back("dilate");
         buttonNames.push_back("Panorama");
-        if (!model.isGrayMode()) {
-            buttonNames.push_back("+Canny");
+        buttonNames.push_back("Canny");
+        int undoCount = model.getStackSize();
+        if (undoCount > 0) {
+            buttonNames.push_back("Undo (" + std::to_string(undoCount) + ")");
+        } else {
+            buttonNames.push_back("Undo");
         }
+
         drawButtons(buttonNames);
 
         cv::Mat resizedImage;
