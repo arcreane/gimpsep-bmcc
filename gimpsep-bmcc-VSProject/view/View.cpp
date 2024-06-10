@@ -77,6 +77,7 @@ void View::createGUI()
         buttonNames.push_back("Size-");
         buttonNames.push_back("erode");
         buttonNames.push_back("dilate");
+        buttonNames.push_back("Panorama");
         if (!model.isGrayMode()) {
             buttonNames.push_back("+Canny");
         }
