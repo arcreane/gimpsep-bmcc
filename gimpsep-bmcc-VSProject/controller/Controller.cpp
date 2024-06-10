@@ -61,6 +61,10 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
         {
             applyCanny();
         }
+        else if (buttonRects.size() > 11 && buttonRects[11].contains(cv::Point(x, y)))
+        {
+            undo();
+        }
     }
 }
 
@@ -84,6 +88,8 @@ void Controller::toggleGrayMode()
     cv::Mat image = model.getImage();
     if (!image.empty())
     {
+        model.saveState();
+
         cv::Mat grayImage;
         if (image.channels() == 3)
         {
@@ -117,6 +123,8 @@ void Controller::increaseImageSize()
     cv::Mat image = model.getImage();
     if (!image.empty())
     {
+        model.saveState();
+
         double scaleFactor = 1.1f;
         cv::Mat resizedImage;
         cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
@@ -134,6 +142,8 @@ void Controller::decreaseImageSize()
     cv::Mat image = model.getImage();
     if (!image.empty())
     {
+        model.saveState();
+
         double scaleFactor = 0.9f;
         cv::Mat resizedImage;
         cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
@@ -149,6 +159,8 @@ void Controller::decreaseImageSize()
 void Controller::applyLighten()
 {
     cv::Mat lightenedImage = model.getImage();
+    model.saveState();
+
     lightenedImage.convertTo(lightenedImage, -1, 1, 50);
     model.setImage(lightenedImage);
     updateView();
@@ -157,6 +169,8 @@ void Controller::applyLighten()
 void Controller::applyDarken()
 {
     cv::Mat darkenImage = model.getImage();
+    model.saveState();
+
     darkenImage.convertTo(darkenImage, -1, 1, -50);
     model.setImage(darkenImage);
     updateView();
@@ -176,6 +190,7 @@ void Controller::updateView()
 void Controller::applyCanny()
 {
     cv::Mat grayImage, edges;
+    model.saveState();
 
     if (model.getImage().channels() == 3)
     {
@@ -196,6 +211,8 @@ void Controller::erodeOrDilate(bool isErosion)
     cv::Mat image = model.getImage();
     if (!image.empty())
     {
+        model.saveState();
+
         cv::Mat result;
         cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(model.getErosionSize(), model.getErosionSize()));
 
@@ -214,8 +231,8 @@ void Controller::erodeOrDilate(bool isErosion)
 
 void Controller::addImageToRight()
 {
-    const char* filterPatterns[] = { "*.jpg", "*.png" };                                           // Séparez les filtres par des virgules
-    const char* imagePath = tinyfd_openFileDialog("Open Image", "", 2, filterPatterns, NULL, 0); // Le 2 indique le nombre de motifs de filtre
+    const char* filterPatterns[] = { "*.jpg", "*.png" };
+    const char* imagePath = tinyfd_openFileDialog("Open Image", "", 2, filterPatterns, NULL, 0);
     if (imagePath)
     {
         std::cout << "Image loaded for panorama: " << imagePath << std::endl;
@@ -226,6 +243,8 @@ void Controller::addImageToRight()
             return;
         }
 
+        model.saveState();
+
         cv::Mat existingImage = model.getImage();
         if (existingImage.empty())
         {
@@ -233,7 +252,6 @@ void Controller::addImageToRight()
             return;
         }
 
-        // Assure que les deux images ont la même hauteur
         if (existingImage.rows != newImage.rows)
         {
             cv::resize(newImage, newImage, cv::Size(newImage.cols, existingImage.rows));
@@ -250,4 +268,10 @@ void Controller::addImageToRight()
     {
         std::cout << "No image selected for panorama" << std::endl;
     }
+}
+
+void Controller::undo()
+{
+    model.undo();
+    updateView();
 }
