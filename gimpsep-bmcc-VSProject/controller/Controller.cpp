@@ -171,36 +171,69 @@ void Controller::increaseImageSize()
 {
     cv::Mat image = model.getImage();
     if (!image.empty()) {
-        // Diminue la taille de l'image par exemple en divisant la largeur et la hauteur par un facteur
-        double scaleFactor = 1.1f; // Facteur de réduction par exemple
+        model.saveState(); // Save the current state before modifying
+        double scaleFactor = 1.1f;
         cv::Mat resizedImage;
         cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
-        image = resizedImage;
         model.setImage(resizedImage);
         if (!model.isResizeMode()) {
             model.toggleResizeMode();
         }
-        updateView(); // Met à jour la vue avec la nouvelle image
+        updateView();
     }
 }
 
-void Controller::decreaseImageSize() {
+void Controller::decreaseImageSize()
+{
     cv::Mat image = model.getImage();
     if (!image.empty()) {
-        // Diminue la taille de l'image par exemple en divisant la largeur et la hauteur par un facteur
-        double scaleFactor = 0.9f; // Facteur de réduction par exemple
+        model.saveState(); // Save the current state before modifying
+        double scaleFactor = 0.9f;
         cv::Mat resizedImage;
         cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
-        image = resizedImage;
-        std::cout << "Image type after resize" << resizedImage.type() << std::endl;
         model.setImage(resizedImage);
-        std::cout << "Image type after save" << model.getImage().type() << std::endl;
         if (!model.isResizeMode()) {
             model.toggleResizeMode();
         }
-        std::cout << "new Width : " << static_cast<int>(model.getImage().cols) << std::endl;
-        updateView(); // Met à jour la vue avec la nouvelle image
+        updateView();
     }
+}
+
+void Controller::applyCanny()
+{
+    cv::Mat grayImage, edges;
+    if (model.getImage().channels() == 3) {
+        cv::cvtColor(model.getImage(), grayImage, cv::COLOR_BGR2GRAY);
+    } else {
+        grayImage = model.getImage();
+    }
+    model.saveState(); // Save the current state before modifying
+    cv::Canny(grayImage, edges, lowThreshold, highThreshold, kernelSize);
+    cv::cvtColor(edges, model.getImage(), cv::COLOR_GRAY2BGR);
+    updateView();
+}
+
+void Controller::erodeOrDilate(bool isErosion, int size)
+{
+    cv::Mat image = model.getImage();
+    if (!image.empty()) {
+        model.saveState(); // Save the current state before modifying
+        cv::Mat result;
+        cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(size, size));
+        if (isErosion) {
+            cv::erode(image, result, kernel);
+        } else {
+            cv::dilate(image, result, kernel);
+        }
+        model.setImage(result);
+        updateView();
+    }
+}
+
+void Controller::undo()
+{
+    model.undo();
+    updateView();
 }
 
 void Controller::saveImage()
@@ -213,44 +246,3 @@ void Controller::updateView()
 {
     view.update();
 }
-
-void Controller::applyCanny()
-{
-    cv::Mat grayImage, edges;
-
-    // Convert to grayscale if the image is not already in grayscale
-    if (model.getImage().channels() == 3) {
-        cv::cvtColor(model.getImage(), grayImage, cv::COLOR_BGR2GRAY);
-    } else {
-        grayImage = model.getImage();
-    }
-
-    // Apply Canny edge detection
-    cv::Canny(grayImage, edges, lowThreshold, highThreshold, kernelSize);
-
-    // Convert edges to BGR format to display in color image
-    cv::cvtColor(edges, model.getImage(), cv::COLOR_GRAY2BGR);
-    updateView();
-}
-
-void Controller::erodeOrDilate(bool isErosion, int size)
-{
-    cv::Mat image = model.getImage();
-    if (!image.empty())
-    {
-        cv::Mat result;
-        cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(size, size));
-
-        if (isErosion)
-        {
-            cv::erode(image, result, kernel);
-        }
-        else
-        {
-            cv::dilate(image, result, kernel);
-        }
-        model.setImage(result);
-        updateView();
-    }
-}
-

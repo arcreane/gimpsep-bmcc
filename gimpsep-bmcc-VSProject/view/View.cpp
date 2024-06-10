@@ -90,9 +90,8 @@ void View::createGUI()
         double aspectRatio = static_cast<double>(image.cols) / image.rows;
         int newWidth = static_cast<int>(image.cols);
         int newHeight = static_cast<int>(image.rows);
+
         if (!model.isResizeMode()) {
-            std::cout << "new Width : " << newWidth << std::endl;
-            // Adjust new width and height to maintain aspect ratio
             if (canvasWidth - 200 < (canvasHeight - 200) * aspectRatio)
             {
                 newWidth = canvasWidth - 200;
@@ -130,6 +129,8 @@ void View::createGUI()
                 std::cerr << "Image dimensions are out of canvas bounds" << std::endl;
             }
         }
+    } else {
+        drawButtons(buttonNames);
     }
 }
 
