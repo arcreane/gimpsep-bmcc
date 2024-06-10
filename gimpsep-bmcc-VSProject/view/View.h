@@ -18,12 +18,17 @@ public:
 private:
     ImageModel &model;
     cv::Mat canvas;
+    std::float_t scaleFactor;
     std::string buttonText;
     std::string winName;
     std::function<void(int, int, int, int, void *)> mouseCallback; // Store the callback
     std::vector<cv::Rect> buttonRects; // Store button positions
     void createGUI();
     static void onMouse(int event, int x, int y, int flags, void *userdata); // Static function for OpenCV callback
+
+    static void onErosionSizeChange(int, void*);
+    int erosionSize;
+    int dilationSize;
 };
 
 #endif // VIEW_H

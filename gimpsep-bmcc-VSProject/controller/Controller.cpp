@@ -25,6 +25,7 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
         {
             std::cout << "Save image button clicked" << std::endl;
             saveImage();
+
         }
         else if (buttonRects.size() > 2 && buttonRects[2].contains(cv::Point(x, y)))
         {
@@ -42,6 +43,26 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
             applyDarken();
         }
         else if (buttonRects.size() > 5 && buttonRects[5].contains(cv::Point(x, y)))
+        {
+            std::cout << "Size + mode button clicked" << std::endl;
+            increaseImageSize();
+        }
+        else if (buttonRects.size() > 5 && buttonRects[6].contains(cv::Point(x, y)))
+        {
+            std::cout << "Size - mode button clicked" << std::endl;
+                decreaseImageSize();
+        }
+        else if (buttonRects.size() > 5 && buttonRects[7].contains(cv::Point(x, y)))
+        {
+            std::cout << "Erode threshold button clicked" << std::endl;
+                erodeOrDilate(true);
+        }
+        else if (buttonRects.size() > 5 && buttonRects[8].contains(cv::Point(x, y)))
+        {
+            std::cout << "dilate threshold button clicked" << std::endl;
+            erodeOrDilate(false);
+        }
+        else if (buttonRects.size() > 5 && buttonRects[9].contains(cv::Point(x, y)))
         {
             std::cout << "Increase Canny threshold button clicked" << std::endl;
             applyCanny();
@@ -67,8 +88,78 @@ void Controller::loadImage()
 
 void Controller::toggleGrayMode()
 {
-    model.toggleGrayMode();
-    updateView();
+    cv::Mat image = model.getImage();
+    if (!image.empty())
+    {
+        cv::Mat grayImage;
+        // Convert to grayscale if the image is not already in grayscale
+        // deprecated, because the image is always passed on BGR after the operation to be printed on the canvas
+        if (image.channels() == 3)
+        {
+            cv::cvtColor(image, grayImage, cv::COLOR_BGR2GRAY);
+            std::cout << "Converted to grayscale, channels: " << grayImage.channels() << std::endl;
+        }
+        else
+        {
+            grayImage = image.clone();  // Ensure we have a proper clone of the grayscale image
+            std::cout << "Image is already grayscale, channels: " << grayImage.channels() << std::endl;
+        }
+
+        if (!grayImage.empty())
+        {
+            model.setImage(grayImage);
+            // To give image the same type as canvas to print it
+            cv::cvtColor(model.getImage(), grayImage, cv::COLOR_GRAY2BGR);
+            model.setImage(grayImage);
+            std::cout << "Image type after gray conversion: " << model.getImage().type() << std::endl;
+            updateView();
+        }
+        else
+        {
+            std::cerr << "Error: grayImage is empty after conversion" << std::endl;
+        }
+    }
+    else
+    {
+        std::cerr << "Error: Original image is empty" << std::endl;
+    }
+}
+
+
+void Controller::increaseImageSize()
+{
+    cv::Mat image = model.getImage();
+    if (!image.empty()) {
+        // Diminue la taille de l'image par exemple en divisant la largeur et la hauteur par un facteur
+        double scaleFactor = 1.1f; // Facteur de réduction par exemple
+        cv::Mat resizedImage;
+        cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
+        image = resizedImage;
+        model.setImage(resizedImage);
+        if (!model.isResizeMode()) {
+            model.toggleResizeMode();
+        }
+        updateView(); // Met à jour la vue avec la nouvelle image
+    }
+}
+
+void Controller::decreaseImageSize() {
+    cv::Mat image = model.getImage();
+    if (!image.empty()) {
+        // Diminue la taille de l'image par exemple en divisant la largeur et la hauteur par un facteur
+        double scaleFactor = 0.9f; // Facteur de réduction par exemple
+        cv::Mat resizedImage;
+        cv::resize(image, resizedImage, cv::Size(), scaleFactor, scaleFactor);
+        image = resizedImage;
+        std::cout << "Image type after resize" << resizedImage.type() << std::endl;
+        model.setImage(resizedImage);
+        std::cout << "Image type after save" << model.getImage().type() << std::endl;
+        if (!model.isResizeMode()) {
+            model.toggleResizeMode();
+        }
+        std::cout << "new Width : " << static_cast<int>(model.getImage().cols) << std::endl;
+        updateView(); // Met à jour la vue avec la nouvelle image
+    }
 }
 
 void Controller::applyLighten()
@@ -114,3 +205,25 @@ void Controller::applyCanny()
     cv::cvtColor(edges, model.getImage(), cv::COLOR_GRAY2BGR);
     updateView();
 }
+
+void Controller::erodeOrDilate(bool isErosion)
+{
+    cv::Mat image = model.getImage();
+    if (!image.empty())
+    {
+        cv::Mat result;
+        cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(model.getErosionSize(), model.getErosionSize()));
+
+        if (isErosion)
+        {
+            cv::erode(image, result, kernel);
+        }
+        else
+        {
+            cv::dilate(image, result, kernel);
+        }
+        model.setImage(result);
+        updateView();
+    }
+}
+

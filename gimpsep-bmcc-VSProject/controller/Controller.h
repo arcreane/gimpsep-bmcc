@@ -16,6 +16,9 @@ private:
     void saveImage();
     void updateView();
     void applyCanny();
+    void erodeOrDilate(bool isErosion);
+    void increaseImageSize();
+    void decreaseImageSize();
     void applyLighten();
     void applyDarken();
 
