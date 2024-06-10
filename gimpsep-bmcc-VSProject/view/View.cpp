@@ -5,6 +5,7 @@
 View::View(ImageModel& model) : model(model), buttonText("Gris"), winName("GIMProvise"), scaleFactor(1.0f)
 {
     cv::namedWindow(winName, cv::WINDOW_AUTOSIZE);
+    cv::createTrackbar("Erosion Size", winName, &erosionSize, 21, onErosionSizeChange, this);
     createGUI();
 }
 
@@ -58,6 +59,7 @@ void View::createGUI()
     int canvasWidth = 1400;
     int canvasHeight = 1000;
     canvas = cv::Mat3b(canvasHeight, canvasWidth, cv::Vec3b(0, 0, 0));
+
 
     std::vector<std::string> buttonNames = {"File", "Save", "Size+", "Size-", "Gris" , "erode", "dilate"};
     if (!model.isGrayMode()) {
@@ -123,4 +125,11 @@ void View::createGUI()
             std::cerr << "Type mismatch between resizedImage and canvas" << std::endl;
         }
     }
+}
+
+void View::onErosionSizeChange(int, void* userdata)
+{
+    View* self = static_cast<View*>(userdata);
+    self->erosionSize = std::max(1, self->erosionSize); // Ensure size is at least 1
+    self->model.setErosionSize(self->erosionSize);
 }

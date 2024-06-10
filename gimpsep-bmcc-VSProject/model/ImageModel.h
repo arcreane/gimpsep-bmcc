@@ -15,12 +15,15 @@ public:
     bool isResizeMode() const;
     cv::Mat getImage() const;
     void setImage(const cv::Mat& image);
+    void setErosionSize(int size);
+    int getErosionSize();
 
 private:
     cv::Mat colorImage;
     cv::Mat grayImage;
     bool grayMode;
     bool resizeMode;
+    int erosionSize;
 };
 
 #endif // IMAGEMODEL_H

@@ -44,3 +44,14 @@ void ImageModel::setImage(const cv::Mat& image)
 {
     colorImage = image;
 }
+
+void ImageModel::setErosionSize(int size)
+{
+    erosionSize = size;
+}
+
+int ImageModel::getErosionSize()
+{
+    return erosionSize;
+}
+

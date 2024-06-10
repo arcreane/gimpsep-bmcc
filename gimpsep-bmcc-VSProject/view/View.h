@@ -22,6 +22,10 @@ private:
     std::function<void(int, int, int, int, void *)> mouseCallback; // Store the callback
     void createGUI();
     static void onMouse(int event, int x, int y, int flags, void *userdata); // Static function for OpenCV callback
+
+    static void onErosionSizeChange(int, void*);
+    int erosionSize;
+    int dilationSize;
 };
 
 #endif // VIEW_H

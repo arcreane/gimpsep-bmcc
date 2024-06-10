@@ -190,7 +190,7 @@ void Controller::erodeOrDilate(bool isErosion, int size)
     if (!image.empty())
     {
         cv::Mat result;
-        cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(size, size));
+        cv::Mat kernel = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(model.getErosionSize(), model.getErosionSize()));
 
         if (isErosion)
         {
