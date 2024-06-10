@@ -14,21 +14,15 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
 {
     if (event == cv::EVENT_LBUTTONDOWN)
     {
-        int buttonSize = 70;
-        int buttonSpacing = 10;
-        
-        // Calculate button index based on x and y coordinates
-        int col = x / (buttonSize + buttonSpacing);
-        int row = y / (buttonSize / 2 + buttonSpacing);
-        int buttonIndex = row * 2 + col;
-
-        switch (buttonIndex)
+        std::cout << "Mouse clicked at (" << x << ", " << y << ")" << std::endl;
+        const auto& buttonRects = view.getButtonRects();
+        if (buttonRects.size() > 0 && buttonRects[0].contains(cv::Point(x, y)))
         {
-        case 0:
             std::cout << "Load image button clicked" << std::endl;
             loadImage();
-            break;
-        case 1:
+        }
+        else if (buttonRects.size() > 1 && buttonRects[1].contains(cv::Point(x, y)))
+        {
             std::cout << "Save image button clicked" << std::endl;
             saveImage();
             break;
@@ -53,11 +47,26 @@ void Controller::handleMouseEvent(int event, int x, int y, int flags, void *user
             erodeOrDilate(false, 10);
             break;
         case 7:
+        }
+        else if (buttonRects.size() > 2 && buttonRects[2].contains(cv::Point(x, y)))
+        {
+            std::cout << "Toggle gray mode button clicked" << std::endl;
+            toggleGrayMode();
+        }
+        else if (buttonRects.size() > 3 && buttonRects[3].contains(cv::Point(x, y)))
+        {
+            std::cout << "Lighten button clicked" << std::endl;
+            applyLighten();
+        }
+        else if (buttonRects.size() > 4 && buttonRects[4].contains(cv::Point(x, y)))
+        {
+            std::cout << "Darken button clicked" << std::endl;
+            applyDarken();
+        }
+        else if (buttonRects.size() > 5 && buttonRects[5].contains(cv::Point(x, y)))
+        {
             std::cout << "Increase Canny threshold button clicked" << std::endl;
             applyCanny();
-            break;
-        default:
-            break;
         }
     }
 }
@@ -152,6 +161,20 @@ void Controller::decreaseImageSize() {
         std::cout << "new Width : " << static_cast<int>(model.getImage().cols) << std::endl;
         updateView(); // Met à jour la vue avec la nouvelle image
     }
+}
+
+void Controller::applyLighten()
+{
+    cv::Mat lightenedImage = model.getImage();
+    lightenedImage.convertTo(lightenedImage, -1, 1, 50); // Increase brightness
+    updateView();
+}
+
+void Controller::applyDarken()
+{
+    cv::Mat darkenImage = model.getImage();
+    darkenImage.convertTo(darkenImage, -1, 1, - 50); // Increase brightness
+    updateView();
 }
 
 void Controller::saveImage()

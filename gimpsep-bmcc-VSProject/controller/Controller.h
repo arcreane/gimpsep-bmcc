@@ -19,6 +19,8 @@ private:
     void erodeOrDilate(bool isErosion, int size);
     void increaseImageSize();
     void decreaseImageSize();
+    void applyLighten();
+    void applyDarken();
 
     ImageModel model;
     View view;
