@@ -27,7 +27,7 @@ private:
     ImageModel model;
     View view;
 
-    // New Canny threshold variables
+
     int kernelSize;
     int lowThreshold = 100;
     int highThreshold = 200;

@@ -72,9 +72,7 @@ void ImageModel::undo()
     }
 }
 
-// Define the getStackSize method
 int ImageModel::getStackSize() const {
-    // Your implementation here
-    return imageHistory.size(); // Assuming stackSize is a member variable
+    return imageHistory.size();
 }
 
